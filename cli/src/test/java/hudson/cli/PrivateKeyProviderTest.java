@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -129,5 +130,16 @@ public class PrivateKeyProviderTest {
         File file = new File(this.getClass().getResource("openssh-broken").getFile());
         String password = "password";
         assertThrows(IllegalArgumentException.class, () -> PrivateKeyProvider.loadKey(file, password));
+    }
+
+    /**
+     Loading Eddsa key should fail when EdDsa library is disabled
+     */
+    @Test
+    public void loadEddsaKeyNoProvider() {
+        File file = new File(this.getClass().getResource("eddsa-pk").getFile());
+        String password = "password";
+        System.setProperty("org.apache.sshd.security.provider.EdDSA.enabled", "false");
+        assertThrows(NoSuchAlgorithmException.class, () -> PrivateKeyProvider.loadKey(file, password));
     }
 }

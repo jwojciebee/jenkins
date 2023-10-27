@@ -241,6 +241,12 @@ public class CLI {
                 args = args.subList(2, args.size());
                 continue;
             }
+            if (head.equals("-fips")) {
+                System.setProperty("org.apache.sshd.security.provider.EdDSA.enabled", "false");
+                LOGGER.info("FIPS mode enabled");
+                args = args.subList(1, args.size());
+                continue;
+            }
             break;
         }
 
